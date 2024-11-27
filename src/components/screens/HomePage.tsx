@@ -17,13 +17,17 @@ const HomePage = () => {
 
   return (
     <div
-      className={`h-full ${theme === "light" ? "bg-white text-gray-900" : "bg-[#1e1f21] text-white"} p-8`}
+      className={`h-full ${
+        theme === "light" ? "bg-white text-gray-900" : "bg-[#1e1f21] text-white"
+      } p-8`}
     >
       {/* Header Section */}
       <header className="mb-8">
         <div className="text-center mt-2 mb-6">
           <h1
-            className={`text-lg font-light ${theme === "light" ? "text-gray-500" : "text-gray-400"}`}
+            className={`text-lg font-light ${
+              theme === "light" ? "text-gray-500" : "text-gray-400"
+            }`}
           >
             {new Date().toLocaleDateString(undefined, {
               day: "numeric",
@@ -31,18 +35,36 @@ const HomePage = () => {
               month: "long",
             })}
           </h1>
-          <h2 className="text-2xl font-semibold">Good morning, Springreen</h2>
+          <h2 className="text-2xl font-semibold">
+            Good{" "}
+            {(() => {
+              const hour = new Date().getHours();
+              if (hour < 12) return "morning";
+              if (hour < 18) return "afternoon";
+              if (hour < 21) return "evening";
+              return "night";
+            })()}
+            , Mohit
+          </h2>
         </div>
 
         <div
-          className={`mt-4 flex items-center justify-center gap-10 ${theme === "light" ? "bg-gray-100" : "bg-[#2e2e30]"} p-1 border ${theme === "light" ? "border-gray-200" : "border-black"} rounded-full`}
+          className={`mt-4 flex items-center justify-center gap-10 ${
+            theme === "light" ? "bg-gray-100" : "bg-[#2e2e30]"
+          } p-1 border ${
+            theme === "light" ? "border-gray-200" : "border-black"
+          } rounded-full`}
         >
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="link"
-                  className={`${theme === "light" ? "text-gray-600 hover:text-gray-900" : "text-gray-400 hover:text-gray-300"}`}
+                  className={`${
+                    theme === "light"
+                      ? "text-gray-600 hover:text-gray-900"
+                      : "text-gray-400 hover:text-gray-300"
+                  }`}
                 >
                   My week <span className="ml-1">▾</span>
                 </Button>
@@ -55,7 +77,9 @@ const HomePage = () => {
             </DropdownMenu>
           </div>
           <div
-            className={`h-6 border-l ${theme === "light" ? "border-gray-300" : "border-gray-600"}`}
+            className={`h-6 border-l ${
+              theme === "light" ? "border-gray-300" : "border-gray-600"
+            }`}
           ></div>
           <span
             className={theme === "light" ? "text-gray-600" : "text-gray-400"}
@@ -63,7 +87,9 @@ const HomePage = () => {
             0 tasks completed
           </span>
           <div
-            className={`h-6 border-l ${theme === "light" ? "border-gray-300" : "border-gray-600"}`}
+            className={`h-6 border-l ${
+              theme === "light" ? "border-gray-300" : "border-gray-600"
+            }`}
           ></div>
           <span
             className={theme === "light" ? "text-gray-600" : "text-gray-400"}
@@ -77,25 +103,39 @@ const HomePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* My Tasks */}
         <div
-          className={`${theme === "light" ? "bg-white" : "bg-[#2e2e30]"} p-6 rounded-lg shadow-md`}
+          className={`${
+            theme === "light" ? "bg-white" : "bg-[#2e2e30]"
+          } p-6 rounded-lg shadow-md`}
         >
           <h3 className="text-lg font-semibold mb-4">My tasks</h3>
           <div className="space-y-2">
             <Button
               variant="link"
-              className={`${theme === "light" ? "text-gray-600 hover:text-gray-900" : "text-gray-400 hover:text-gray-300"}`}
+              className={`${
+                theme === "light"
+                  ? "text-gray-600 hover:text-gray-900"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
             >
               Upcoming
             </Button>
             <Button
               variant="link"
-              className={`${theme === "light" ? "text-gray-600 hover:text-gray-900" : "text-gray-400 hover:text-gray-300"}`}
+              className={`${
+                theme === "light"
+                  ? "text-gray-600 hover:text-gray-900"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
             >
               Overdue (2)
             </Button>
             <Button
               variant="link"
-              className={`${theme === "light" ? "text-gray-600 hover:text-gray-900" : "text-gray-400 hover:text-gray-300"}`}
+              className={`${
+                theme === "light"
+                  ? "text-gray-600 hover:text-gray-900"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
             >
               Completed
             </Button>
@@ -107,7 +147,9 @@ const HomePage = () => {
 
         {/* Projects */}
         <div
-          className={`${theme === "light" ? "bg-white" : "bg-[#2e2e30]"} p-6 rounded-lg shadow-md`}
+          className={`${
+            theme === "light" ? "bg-white" : "bg-[#2e2e30]"
+          } p-6 rounded-lg shadow-md`}
         >
           <h3 className="text-lg font-semibold mb-4">Projects</h3>
           <div className="space-y-4">
@@ -116,7 +158,9 @@ const HomePage = () => {
             </Button>
             <div className="flex items-center space-x-2">
               <div
-                className={`w-10 h-10 ${theme === "light" ? "bg-gray-100" : "bg-[#1e1f21]"} flex items-center justify-center rounded`}
+                className={`w-10 h-10 ${
+                  theme === "light" ? "bg-gray-100" : "bg-[#1e1f21]"
+                } flex items-center justify-center rounded`}
               >
                 📄
               </div>
@@ -127,7 +171,9 @@ const HomePage = () => {
 
         {/* People */}
         <div
-          className={`${theme === "light" ? "bg-white" : "bg-[#2e2e30]"} p-6 rounded-lg shadow-md`}
+          className={`${
+            theme === "light" ? "bg-white" : "bg-[#2e2e30]"
+          } p-6 rounded-lg shadow-md`}
         >
           <h3 className="text-lg font-semibold mb-4">People</h3>
           <div className="grid grid-cols-2 gap-4">
@@ -137,7 +183,9 @@ const HomePage = () => {
                 <AvatarFallback>AB</AvatarFallback>
               </Avatar>
               <div
-                className={`w-20 h-6 ${theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"} rounded`}
+                className={`w-20 h-6 ${
+                  theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"
+                } rounded`}
               ></div>
             </div>
             <div className="flex items-center space-x-2">
@@ -146,7 +194,9 @@ const HomePage = () => {
                 <AvatarFallback>CD</AvatarFallback>
               </Avatar>
               <div
-                className={`w-16 h-6 ${theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"} rounded`}
+                className={`w-16 h-6 ${
+                  theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"
+                } rounded`}
               ></div>
             </div>
             <div className="flex items-center space-x-2">
@@ -155,7 +205,9 @@ const HomePage = () => {
                 <AvatarFallback>EF</AvatarFallback>
               </Avatar>
               <div
-                className={`w-16 h-6 ${theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"} rounded`}
+                className={`w-16 h-6 ${
+                  theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"
+                } rounded`}
               ></div>
             </div>
             <div className="flex items-center space-x-2">
@@ -164,7 +216,9 @@ const HomePage = () => {
                 <AvatarFallback>GH</AvatarFallback>
               </Avatar>
               <div
-                className={`w-24 h-6 ${theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"} rounded`}
+                className={`w-24 h-6 ${
+                  theme === "light" ? "bg-gray-100" : "bg-[#3d3f41]"
+                } rounded`}
               ></div>
             </div>
           </div>
@@ -175,7 +229,9 @@ const HomePage = () => {
 
         {/* Widgets */}
         <div
-          className={`${theme === "light" ? "bg-white" : "bg-[#2e2e30]"} p-6 rounded-lg shadow-md col-span-1 md:col-span-2 lg:col-span-3`}
+          className={`${
+            theme === "light" ? "bg-white" : "bg-[#2e2e30]"
+          } p-6 rounded-lg shadow-md col-span-1 md:col-span-2 lg:col-span-3`}
         >
           <h3 className="text-lg font-semibold mb-4">
             Drag and drop new widgets

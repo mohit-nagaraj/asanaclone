@@ -84,6 +84,7 @@ import { Separator } from "@/components/ui/separator";
 import HomePage from "@/components/screens/HomePage";
 import InboxPage from "@/components/screens/InboxPage";
 import { ThemeProvider, useTheme } from "@/components/themeprovider";
+import { useRouter } from "next/navigation";
 interface Section {
   id: string;
   title: string;
@@ -208,10 +209,10 @@ function SortableTask({
                   key={collaborator.id}
                   onSelect={() => {
                     const updatedCollaborators = task.collaborators.some(
-                      (c) => c.id === collaborator.id,
+                      (c) => c.id === collaborator.id
                     )
                       ? task.collaborators.filter(
-                          (c) => c.id !== collaborator.id,
+                          (c) => c.id !== collaborator.id
                         )
                       : [...task.collaborators, collaborator];
                     onUpdate({ ...task, collaborators: updatedCollaborators });
@@ -219,7 +220,7 @@ function SortableTask({
                 >
                   <Checkbox
                     checked={task.collaborators.some(
-                      (c) => c.id === collaborator.id,
+                      (c) => c.id === collaborator.id
                     )}
                     className="mr-2 h-4 w-4"
                   />
@@ -307,7 +308,7 @@ function SortableSection({
 
   const handleUpdateTask = (updatedTask: Task) => {
     const updatedTasks = section.tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
+      task.id === updatedTask.id ? updatedTask : task
     );
     onUpdateTasks(section.id, updatedTasks);
   };
@@ -447,7 +448,7 @@ function DashboardContent() {
       activationConstraint: {
         distance: 8,
       },
-    }),
+    })
   );
 
   function handleDragEnd(event: DragEndEvent) {
@@ -456,10 +457,10 @@ function DashboardContent() {
     if (over && active.id !== over.id) {
       setSections((sections) => {
         const oldIndex = sections.findIndex(
-          (section) => section.id === active.id,
+          (section) => section.id === active.id
         );
         const newIndex = sections.findIndex(
-          (section) => section.id === over.id,
+          (section) => section.id === over.id
         );
 
         return arrayMove(sections, oldIndex, newIndex);
@@ -474,8 +475,8 @@ function DashboardContent() {
   const handleUpdateTasks = (sectionId: string, tasks: Task[]) => {
     setSections((prev) =>
       prev.map((section) =>
-        section.id === sectionId ? { ...section, tasks } : section,
-      ),
+        section.id === sectionId ? { ...section, tasks } : section
+      )
     );
   };
 
@@ -509,7 +510,7 @@ function DashboardContent() {
   const [isAddingProject, setIsAddingProject] = React.useState(false);
   const [newProjectName, setNewProjectName] = React.useState("");
   const [editingProjectId, setEditingProjectId] = React.useState<string | null>(
-    null,
+    null
   );
   const [editingProjectName, setEditingProjectName] = React.useState("");
 
@@ -531,15 +532,15 @@ function DashboardContent() {
 
   const handleEditProjectSubmit = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    projectId: string,
+    projectId: string
   ) => {
     if (e.key === "Enter" && editingProjectName.trim()) {
       setProjects((prevProjects) =>
         prevProjects.map((project) =>
           project.id === projectId
             ? { ...project, name: editingProjectName }
-            : project,
-        ),
+            : project
+        )
       );
       setEditingProjectId(null);
       setEditingProjectName("");
@@ -600,21 +601,31 @@ function DashboardContent() {
   const toggleField = (id: string) => {
     setFields(
       fields.map((field) =>
-        field.id === id ? { ...field, enabled: !field.enabled } : field,
-      ),
+        field.id === id ? { ...field, enabled: !field.enabled } : field
+      )
     );
   };
 
+  const router = useRouter();
+
   return (
     <div
-      className={`flex h-screen ${theme === "light" ? "bg-white" : "bg-[#1E1F21]"}`}
+      className={`flex h-screen ${
+        theme === "light" ? "bg-white" : "bg-[#1E1F21]"
+      }`}
     >
       <div
-        className={`hidden w-64 border-r ${theme === "light" ? "border-gray-200 bg-gray-100" : "border-[#424244] bg-[#2e2e30]"} lg:block`}
+        className={`hidden w-64 border-r ${
+          theme === "light"
+            ? "border-gray-200 bg-gray-100"
+            : "border-[#424244] bg-[#2e2e30]"
+        } lg:block`}
       >
         <div className="flex h-14 items-center border-b border-[#424244] px-4">
           <Link
-            className={`flex items-center gap-2 font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}
+            className={`flex items-center gap-2 font-semibold ${
+              theme === "light" ? "text-gray-900" : "text-white"
+            }`}
             href="#"
           >
             <Grid className="h-6 w-6" />
@@ -622,10 +633,14 @@ function DashboardContent() {
           </Link>
         </div>
         <div
-          className={`flex flex-col ${theme === "light" ? "text-black" : "text-black"} gap-1 p-4`}
+          className={`flex flex-col ${
+            theme === "light" ? "text-black" : "text-black"
+          } gap-1 p-4`}
         >
           <Button
-            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            className={`justify-start ${
+              theme === "light" ? "text-gray-700" : "text-gray-100"
+            }`}
             variant="ghost"
             onClick={() => setCurrentPage(1)}
           >
@@ -633,7 +648,12 @@ function DashboardContent() {
             Home
           </Button>
           <Button
-            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-white"}`}
+            className={`justify-start ${
+              theme === "light" ? "text-gray-700" : "text-gray-100"
+            }`}
+            className={`justify-start ${
+              theme === "light" ? "text-gray-700" : "text-white"
+            }`}
             variant="ghost"
             onClick={() => setCurrentPage(2)}
           >
@@ -641,7 +661,9 @@ function DashboardContent() {
             My Tasks
           </Button>
           <Button
-            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            className={`justify-start ${
+              theme === "light" ? "text-gray-700" : "text-gray-100"
+            }`}
             variant="ghost"
             onClick={() => setCurrentPage(3)}
           >
@@ -649,33 +671,45 @@ function DashboardContent() {
             Inbox
           </Button>
           <Separator
-            className={`my-2 justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            className={`my-2 justify-start ${
+              theme === "light" ? "text-gray-700" : "text-gray-100"
+            }`}
           />
           <div
-            className={`flex items-center justify-between ${theme === "light" ? "text-black" : "text-white"} px-2 py-1 text-sm font-semibold `}
+            className={`flex items-center justify-between ${
+              theme === "light" ? "text-black" : "text-white"
+            } px-2 py-1 text-sm font-semibold `}
           >
             Projects
             <Button
               size="icon"
               variant="ghost"
-              className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+              className={`justify-start ${
+                theme === "light" ? "text-gray-700" : "text-gray-100"
+              }`}
               onClick={() => setIsAddingProject(true)}
             >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
           <div
-            className={`flex flex-col gap-1 ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            className={`flex flex-col gap-1 ${
+              theme === "light" ? "text-gray-700" : "text-gray-100"
+            }`}
           >
             {projects.map((project) => (
               <div
                 key={project.id}
-                className={`flex items-center ${theme === "light" ? "text-black" : "text-gray-100"} gap-2`}
+                className={`flex items-center ${
+                  theme === "light" ? "text-black" : "text-gray-100"
+                } gap-2`}
               >
                 {editingProjectId === project.id ? (
                   <Input
                     autoFocus
-                    className={`${theme === "light" ? "text-black" : "text-white"} bg-transparent`}
+                    className={`${
+                      theme === "light" ? "text-black" : "text-white"
+                    } bg-transparent`}
                     value={editingProjectName}
                     onChange={(e) => setEditingProjectName(e.target.value)}
                     onKeyDown={(e) => handleEditProjectSubmit(e, project.id)}
@@ -683,7 +717,9 @@ function DashboardContent() {
                   />
                 ) : (
                   <Button
-                    className={`justify-start ${theme === "light" ? "text-black" : "text-gray-100"} w-full`}
+                    className={`justify-start ${
+                      theme === "light" ? "text-black" : "text-gray-100"
+                    } w-full`}
                     variant="ghost"
                     onClick={() => {
                       setEditingProjectId(project.id);
@@ -717,7 +753,9 @@ function DashboardContent() {
       </div>
       <div className="flex flex-1 flex-col">
         <header
-          className={`flex h-14 items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} px-4 lg:px-6`}
+          className={`flex h-14 items-center gap-4 border-b ${
+            theme === "light" ? "border-gray-200" : "border-[#424244]"
+          } px-4 lg:px-6`}
         >
           <Button
             variant="ghost"
@@ -743,12 +781,16 @@ function DashboardContent() {
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                   <span
-                    className={`text-sm font-medium ${theme === "light" ? "text-gray-700" : "text-white"}`}
+                    className={`text-sm font-medium ${
+                      theme === "light" ? "text-gray-700" : "text-white"
+                    }`}
                   >
                     My tasks
                   </span>
                   <ChevronDown
-                    className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
+                    className={`h-4 w-4 ${
+                      theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                    }`}
                   />
                 </Button>
               </DropdownMenuTrigger>
@@ -789,13 +831,37 @@ function DashboardContent() {
             >
               <Settings className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
-            >
-              <Users className="h-4 w-4" />
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={
+                    theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                  }
+                >
+                  <Users className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-2">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-left"
+                  onClick={() => console.log("Profile clicked")}
+                >
+                  Profile
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-left"
+                  onClick={() => {
+                    router.push("/auth?logout=true");
+                  }}
+                >
+                  Logout
+                </Button>
+              </PopoverContent>
+            </Popover>
           </div>
         </header>
         {currentPage == 1 && <HomePage />}
@@ -803,7 +869,9 @@ function DashboardContent() {
         {currentPage == 2 && (
           <div>
             <div
-              className={`flex items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} px-4 py-2`}
+              className={`flex items-center gap-4 border-b ${
+                theme === "light" ? "border-gray-200" : "border-[#424244]"
+              } px-4 py-2`}
             >
               <Button
                 variant="ghost"
@@ -813,10 +881,16 @@ function DashboardContent() {
               </Button>
             </div>
             <div
-              className={`flex items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} p-4`}
+              className={`flex items-center gap-4 border-b ${
+                theme === "light" ? "border-gray-200" : "border-[#424244]"
+              } p-4`}
             >
               <Button
-                className={`${theme === "light" ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-[#4573D2] text-white hover:bg-[#4573D2]/90"}`}
+                className={`${
+                  theme === "light"
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-[#4573D2] text-white hover:bg-[#4573D2]/90"
+                }`}
               >
                 Add task
                 <ChevronDown className="ml-2 h-4 w-4" />
@@ -828,7 +902,9 @@ function DashboardContent() {
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className={`w-[400px] ${theme === "light" ? "bg-white" : "bg-[#1E1F21]"}`}
+                    className={`w-[400px] ${
+                      theme === "light" ? "bg-white" : "bg-[#1E1F21]"
+                    }`}
                   >
                     <SheetHeader>
                       <SheetTitle
@@ -844,12 +920,18 @@ function DashboardContent() {
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h2
-                            className={`text-lg font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}
+                            className={`text-lg font-semibold ${
+                              theme === "light" ? "text-gray-900" : "text-white"
+                            }`}
                           >
                             Fields
                           </h2>
                           <p
-                            className={`text-sm ${theme === "light" ? "text-gray-500" : "text-gray-400"}`}
+                            className={`text-sm ${
+                              theme === "light"
+                                ? "text-gray-500"
+                                : "text-gray-400"
+                            }`}
                           >
                             Show, hide, and reorder columns in this view.
                           </p>
@@ -877,7 +959,11 @@ function DashboardContent() {
                                 {field.icon}
                               </div>
                               <span
-                                className={`text-sm font-medium ${theme === "light" ? "text-gray-900" : "text-white"}`}
+                                className={`text-sm font-medium ${
+                                  theme === "light"
+                                    ? "text-gray-900"
+                                    : "text-white"
+                                }`}
                               >
                                 {field.name}
                               </span>
@@ -895,7 +981,11 @@ function DashboardContent() {
               </div>
             </div>
             <div
-              className={` grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} p-4 text-sm ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+              className={` grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b ${
+                theme === "light" ? "border-gray-200" : "border-[#424244]"
+              } p-4 text-sm ${
+                theme === "light" ? "text-gray-700" : "text-gray-100"
+              }`}
             >
               <div></div>
               <div>Task name</div>
