@@ -501,9 +501,17 @@ export default function Dashboard() {
 
   const [currentPage, setCurrentPage] = React.useState(1);
 
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
   return (
     <div className="flex h-screen bg-[#1E1F21]">
-      <div className="hidden w-64 border-r border-[#424244] bg-[#2e2e30] lg:block">
+      <div
+        className={`${
+          isSidebarOpen ? "block" : "hidden"
+        } w-64 border-r border-[#424244] bg-[#2e2e30]`}
+      >
         <div className="flex h-14 items-center border-b border-[#424244] px-4">
           <Link
             className="flex items-center gap-2 font-semibold text-white"
@@ -604,8 +612,17 @@ export default function Dashboard() {
       </div>
       <div className="flex flex-1 flex-col">
         <header className="flex h-14 items-center gap-4 border-b border-[#424244] px-4 lg:px-6">
-          <Button variant="ghost" size="icon" className="lg:hidden">
-            <Menu className="h-5 w-5 text-[#9CA6AF]" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-[#9CA6AF]"
+            onClick={toggleSidebar}
+          >
+            {isSidebarOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
