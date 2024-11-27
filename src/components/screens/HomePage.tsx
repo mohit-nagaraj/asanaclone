@@ -39,12 +39,12 @@ const HomePage = () => {
             Good{" "}
             {(() => {
               const hour = new Date().getHours();
-              if (hour < 12) return "morning";
-              if (hour < 18) return "afternoon";
-              if (hour < 21) return "evening";
+              if (hour >= 6 && hour < 12) return "morning";
+              if (hour >= 12 && hour < 18) return "afternoon";
+              if (hour >= 18 && hour < 21) return "evening";
               return "night";
             })()}
-            , Mohit
+            , Springreen
           </h2>
         </div>
 
