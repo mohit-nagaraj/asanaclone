@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -180,10 +181,10 @@ function SortableTask({
                   key={collaborator.id}
                   onSelect={() => {
                     const updatedCollaborators = task.collaborators.some(
-                      (c) => c.id === collaborator.id,
+                      (c) => c.id === collaborator.id
                     )
                       ? task.collaborators.filter(
-                          (c) => c.id !== collaborator.id,
+                          (c) => c.id !== collaborator.id
                         )
                       : [...task.collaborators, collaborator];
                     onUpdate({ ...task, collaborators: updatedCollaborators });
@@ -191,7 +192,7 @@ function SortableTask({
                 >
                   <Checkbox
                     checked={task.collaborators.some(
-                      (c) => c.id === collaborator.id,
+                      (c) => c.id === collaborator.id
                     )}
                     className="mr-2 h-4 w-4"
                   />
@@ -279,7 +280,7 @@ function SortableSection({
 
   const handleUpdateTask = (updatedTask: Task) => {
     const updatedTasks = section.tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
+      task.id === updatedTask.id ? updatedTask : task
     );
     onUpdateTasks(section.id, updatedTasks);
   };
@@ -397,7 +398,7 @@ export default function Dashboard() {
       activationConstraint: {
         distance: 8,
       },
-    }),
+    })
   );
 
   function handleDragEnd(event: DragEndEvent) {
@@ -406,10 +407,10 @@ export default function Dashboard() {
     if (over && active.id !== over.id) {
       setSections((sections) => {
         const oldIndex = sections.findIndex(
-          (section) => section.id === active.id,
+          (section) => section.id === active.id
         );
         const newIndex = sections.findIndex(
-          (section) => section.id === over.id,
+          (section) => section.id === over.id
         );
 
         return arrayMove(sections, oldIndex, newIndex);
@@ -424,8 +425,8 @@ export default function Dashboard() {
   const handleUpdateTasks = (sectionId: string, tasks: Task[]) => {
     setSections((prev) =>
       prev.map((section) =>
-        section.id === sectionId ? { ...section, tasks } : section,
-      ),
+        section.id === sectionId ? { ...section, tasks } : section
+      )
     );
   };
 
@@ -453,6 +454,47 @@ export default function Dashboard() {
     ]);
     setNewSectionTitle("");
     setIsAddingSection(false);
+  };
+
+  const [projects, setProjects] = React.useState<any[]>([]);
+  const [isAddingProject, setIsAddingProject] = React.useState(false);
+  const [newProjectName, setNewProjectName] = React.useState("");
+  const [editingProjectId, setEditingProjectId] = React.useState<string | null>(
+    null
+  );
+  const [editingProjectName, setEditingProjectName] = React.useState("");
+
+  const handleProjectSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && newProjectName.trim()) {
+      const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+      setProjects([
+        ...projects,
+        {
+          id: String(Date.now()),
+          name: newProjectName,
+          color,
+        },
+      ]);
+      setNewProjectName("");
+      setIsAddingProject(false);
+    }
+  };
+
+  const handleEditProjectSubmit = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    projectId: string
+  ) => {
+    if (e.key === "Enter" && editingProjectName.trim()) {
+      setProjects((prevProjects) =>
+        prevProjects.map((project) =>
+          project.id === projectId
+            ? { ...project, name: editingProjectName }
+            : project
+        )
+      );
+      setEditingProjectId(null);
+      setEditingProjectName("");
+    }
   };
 
   return (
@@ -483,18 +525,59 @@ export default function Dashboard() {
           <Separator className="my-2 bg-[#424244]" />
           <div className="flex items-center justify-between px-2 py-1 text-sm font-semibold text-gray-100">
             Projects
-            <Button size="icon" variant="ghost" className="text-[#9CA6AF]">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="text-[#9CA6AF]"
+              onClick={() => setIsAddingProject(true)}
+            >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <Button className="justify-start text-gray-100" variant="ghost">
-            <span className="mr-2 h-2 w-2 rounded-full bg-blue-600" />
-            Marketing
-          </Button>
-          <Button className="justify-start text-gray-100" variant="ghost">
-            <span className="mr-2 h-2 w-2 rounded-full bg-green-600" />
-            Development
-          </Button>
+          <div className="flex flex-col gap-1">
+            {projects.map((project) => (
+              <div key={project.id} className="flex items-center gap-2">
+                {editingProjectId === project.id ? (
+                  <Input
+                    autoFocus
+                    className="bg-transparent text-white"
+                    value={editingProjectName}
+                    onChange={(e) => setEditingProjectName(e.target.value)}
+                    onKeyDown={(e) => handleEditProjectSubmit(e, project.id)}
+                    onBlur={() => setEditingProjectId(null)}
+                  />
+                ) : (
+                  <Button
+                    className="justify-start text-gray-100 w-full"
+                    variant="ghost"
+                    onClick={() => {
+                      setEditingProjectId(project.id);
+                      setEditingProjectName(project.name);
+                    }}
+                  >
+                    <span
+                      className="mr-2 h-2 w-2 rounded-full"
+                      style={{ backgroundColor: project.color }}
+                    />
+                    {project.name.length > 20
+                      ? `${project.name.substring(0, 17)}...`
+                      : project.name}
+                  </Button>
+                )}
+              </div>
+            ))}
+            {isAddingProject && (
+              <Input
+                autoFocus
+                className="bg-transparent text-white"
+                placeholder="Project name"
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                onKeyDown={handleProjectSubmit}
+                onBlur={() => setIsAddingProject(false)}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-1 flex-col">
