@@ -28,6 +28,8 @@ import {
   Inbox,
   List,
   Menu,
+  Moon,
+  Sun,
   MoreHorizontal,
   Plus,
   Search,
@@ -35,6 +37,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import * as React from "react";
 
@@ -65,7 +68,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import HomePage from "@/components/screens/HomePage";
 import InboxPage from "@/components/screens/InboxPage";
-
+import { ThemeProvider, useTheme } from "@/components/themeprovider";
 interface Section {
   id: string;
   title: string;
@@ -183,10 +186,10 @@ function SortableTask({
                   key={collaborator.id}
                   onSelect={() => {
                     const updatedCollaborators = task.collaborators.some(
-                      (c) => c.id === collaborator.id
+                      (c) => c.id === collaborator.id,
                     )
                       ? task.collaborators.filter(
-                          (c) => c.id !== collaborator.id
+                          (c) => c.id !== collaborator.id,
                         )
                       : [...task.collaborators, collaborator];
                     onUpdate({ ...task, collaborators: updatedCollaborators });
@@ -194,7 +197,7 @@ function SortableTask({
                 >
                   <Checkbox
                     checked={task.collaborators.some(
-                      (c) => c.id === collaborator.id
+                      (c) => c.id === collaborator.id,
                     )}
                     className="mr-2 h-4 w-4"
                   />
@@ -282,7 +285,7 @@ function SortableSection({
 
   const handleUpdateTask = (updatedTask: Task) => {
     const updatedTasks = section.tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task
+      task.id === updatedTask.id ? updatedTask : task,
     );
     onUpdateTasks(section.id, updatedTasks);
   };
@@ -390,17 +393,39 @@ function SortableSection({
   );
 }
 
-export default function Dashboard() {
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch
+        id="theme-toggle"
+        checked={theme === "light"}
+        onCheckedChange={() => setTheme(theme === "light" ? "dark" : "light")}
+      />
+      <label htmlFor="theme-toggle" className="sr-only">
+        Toggle theme
+      </label>
+      {theme === "light" ? (
+        <Sun className="h-4 w-4 text-gray-500" />
+      ) : (
+        <Moon className="h-4 w-4 text-gray-400" />
+      )}
+    </div>
+  );
+}
+
+function DashboardContent() {
   const [sections, setSections] = React.useState<Section[]>([]);
   const [isAddingSection, setIsAddingSection] = React.useState(false);
   const [newSectionTitle, setNewSectionTitle] = React.useState("");
-
+  const { theme } = useTheme();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   function handleDragEnd(event: DragEndEvent) {
@@ -409,10 +434,10 @@ export default function Dashboard() {
     if (over && active.id !== over.id) {
       setSections((sections) => {
         const oldIndex = sections.findIndex(
-          (section) => section.id === active.id
+          (section) => section.id === active.id,
         );
         const newIndex = sections.findIndex(
-          (section) => section.id === over.id
+          (section) => section.id === over.id,
         );
 
         return arrayMove(sections, oldIndex, newIndex);
@@ -427,8 +452,8 @@ export default function Dashboard() {
   const handleUpdateTasks = (sectionId: string, tasks: Task[]) => {
     setSections((prev) =>
       prev.map((section) =>
-        section.id === sectionId ? { ...section, tasks } : section
-      )
+        section.id === sectionId ? { ...section, tasks } : section,
+      ),
     );
   };
 
@@ -462,7 +487,7 @@ export default function Dashboard() {
   const [isAddingProject, setIsAddingProject] = React.useState(false);
   const [newProjectName, setNewProjectName] = React.useState("");
   const [editingProjectId, setEditingProjectId] = React.useState<string | null>(
-    null
+    null,
   );
   const [editingProjectName, setEditingProjectName] = React.useState("");
 
@@ -484,15 +509,15 @@ export default function Dashboard() {
 
   const handleEditProjectSubmit = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    projectId: string
+    projectId: string,
   ) => {
     if (e.key === "Enter" && editingProjectName.trim()) {
       setProjects((prevProjects) =>
         prevProjects.map((project) =>
           project.id === projectId
             ? { ...project, name: editingProjectName }
-            : project
-        )
+            : project,
+        ),
       );
       setEditingProjectId(null);
       setEditingProjectName("");
@@ -506,15 +531,15 @@ export default function Dashboard() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div className="flex h-screen bg-[#1E1F21]">
+    <div
+      className={`flex h-screen ${theme === "light" ? "bg-white" : "bg-[#1E1F21]"}`}
+    >
       <div
-        className={`${
-          isSidebarOpen ? "block" : "hidden"
-        } w-64 border-r border-[#424244] bg-[#2e2e30]`}
+        className={`hidden w-64 border-r ${theme === "light" ? "border-gray-200 bg-gray-100" : "border-[#424244] bg-[#2e2e30]"} lg:block`}
       >
         <div className="flex h-14 items-center border-b border-[#424244] px-4">
           <Link
-            className="flex items-center gap-2 font-semibold text-white"
+            className={`flex items-center gap-2 font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}
             href="#"
           >
             <Grid className="h-6 w-6" />
@@ -523,9 +548,7 @@ export default function Dashboard() {
         </div>
         <div className="flex flex-col gap-1 p-4">
           <Button
-            className={`justify-start ${
-              currentPage === 1 ? "text-gray-800 bg-slate-100" : "text-gray-100"
-            }`}
+            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
             variant="ghost"
             onClick={() => setCurrentPage(1)}
           >
@@ -533,9 +556,7 @@ export default function Dashboard() {
             Home
           </Button>
           <Button
-            className={`justify-start ${
-              currentPage === 2 ? "text-gray-800 bg-slate-100" : "text-gray-100"
-            }`}
+            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
             variant="ghost"
             onClick={() => setCurrentPage(2)}
           >
@@ -543,22 +564,22 @@ export default function Dashboard() {
             My Tasks
           </Button>
           <Button
-            className={`justify-start ${
-              currentPage === 3 ? "text-gray-800 bg-slate-100" : "text-gray-100"
-            }`}
+            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
             variant="ghost"
             onClick={() => setCurrentPage(3)}
           >
             <Inbox className="mr-2 h-4 w-4" />
             Inbox
           </Button>
-          <Separator className="my-2 bg-[#424244]" />
+          <Separator
+            className={`my-2 justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+          />
           <div className="flex items-center justify-between px-2 py-1 text-sm font-semibold text-gray-100">
             Projects
             <Button
               size="icon"
               variant="ghost"
-              className="text-[#9CA6AF]"
+              className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
               onClick={() => setIsAddingProject(true)}
             >
               <Plus className="h-4 w-4" />
@@ -611,11 +632,13 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center gap-4 border-b border-[#424244] px-4 lg:px-6">
+        <header
+          className={`flex h-14 items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} px-4 lg:px-6`}
+        >
           <Button
             variant="ghost"
             size="icon"
-            className="text-[#9CA6AF]"
+            className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
             onClick={toggleSidebar}
           >
             {isSidebarOpen ? (
@@ -629,17 +652,36 @@ export default function Dashboard() {
               <AvatarImage alt="User" src="/placeholder-user.jpg" />
               <AvatarFallback>U</AvatarFallback>
             </Avatar>
-            <span className="text-sm font-medium text-white">My tasks</span>
-            <ChevronDown className="h-4 w-4 text-[#9CA6AF]" />
+            <span
+              className={`text-sm font-medium ${theme === "light" ? "text-gray-700" : "text-white"}`}
+            >
+              My tasks
+            </span>
+            <ChevronDown
+              className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
+            />
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-[#9CA6AF]">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
+            >
               <Search className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-[#9CA6AF]">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
+            >
               <Settings className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-[#9CA6AF]">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
+            >
               <Users className="h-4 w-4" />
             </Button>
           </div>
@@ -648,42 +690,92 @@ export default function Dashboard() {
         {currentPage == 3 && <InboxPage />}
         {currentPage == 2 && (
           <div>
-            <div className="flex items-center gap-4 border-b border-[#424244] px-4 py-2">
-              <Button variant="ghost" className="text-[#9CA6AF]">
+            <div
+              className={`flex items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} px-4 py-2`}
+            >
+              <Button
+                variant="ghost"
+                className={
+                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                }
+              >
                 List
               </Button>
-              <Button variant="ghost" className="text-[#9CA6AF]">
+              <Button
+                variant="ghost"
+                className={
+                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                }
+              >
                 Board
               </Button>
-              <Button variant="ghost" className="text-[#9CA6AF]">
+              <Button
+                variant="ghost"
+                className={
+                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                }
+              >
                 Calendar
               </Button>
-              <Button variant="ghost" className="text-[#9CA6AF]">
+              <Button
+                variant="ghost"
+                className={
+                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
+                }
+              >
                 Files
               </Button>
-              <Plus className="h-4 w-4 text-[#9CA6AF]" />
+              <Plus
+                className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
+              />
             </div>
-            <div className="flex items-center gap-4 border-b border-[#424244] p-4">
-              <Button className="bg-[#4573D2] text-white hover:bg-[#4573D2]/90">
+            <div
+              className={`flex items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} p-4`}
+            >
+              <Button
+                className={`${theme === "light" ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-[#4573D2] text-white hover:bg-[#4573D2]/90"}`}
+              >
                 Add task
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
               <div className="ml-auto flex items-center gap-2">
-                <Button variant="ghost" className="text-[#9CA6AF]">
+                <Button
+                  variant="ghost"
+                  className={
+                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
+                  }
+                >
                   Filter
                 </Button>
-                <Button variant="ghost" className="text-[#9CA6AF]">
+                <Button
+                  variant="ghost"
+                  className={
+                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
+                  }
+                >
                   Sort
                 </Button>
-                <Button variant="ghost" className="text-[#9CA6AF]">
+                <Button
+                  variant="ghost"
+                  className={
+                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
+                  }
+                >
                   Group
                 </Button>
-                <Button variant="ghost" className="text-[#9CA6AF]">
+                <Button
+                  variant="ghost"
+                  className={
+                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
+                  }
+                >
                   Options
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b border-[#424244] p-4 text-sm text-gray-100">
+            <div
+              className={` grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} p-4 text-sm ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            >
               <div></div>
               <div>Task name</div>
               <div>Due date</div>
@@ -739,5 +831,13 @@ export default function Dashboard() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <ThemeProvider>
+      <DashboardContent />
+    </ThemeProvider>
   );
 }
