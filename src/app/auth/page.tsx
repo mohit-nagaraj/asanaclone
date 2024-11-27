@@ -59,119 +59,135 @@ export default function AuthForm() {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center flex-1">
-        <Card className="w-[400px]">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">TaskFlow</CardTitle>
-            <CardDescription>Sign in or create a new account.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-              </TabsList>
-              <TabsContent value="signin">
-                <form onSubmit={onSubmit}>
-                  <div className="grid gap-2">
-                    <div className="grid gap-1">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        placeholder="demo@springreen.in"
-                        type="email"
-                        autoCapitalize="none"
-                        autoComplete="email"
-                        autoCorrect="off"
-                        required
-                        disabled={isLoading}
-                      />
-                    </div>
-                    <div className="grid gap-1">
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        placeholder=""
-                        type="password"
-                        autoCapitalize="none"
-                        autoComplete="current-password"
-                        autoCorrect="off"
-                        required
-                        disabled={isLoading}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <ForgotPasswordModal />
-                    </div>
+        {loggingOut ? (
+          <Card className="w-[400px]">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">TaskFlow</CardTitle>
+              <CardDescription>Logging out...</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <div className="h-20 w-20 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="w-[400px]">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">TaskFlow</CardTitle>
+              <CardDescription>
+                Sign in or create a new account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                </TabsList>
+                <TabsContent value="signin">
+                  <form onSubmit={onSubmit}>
+                    <div className="grid gap-2">
+                      <div className="grid gap-1">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          placeholder="demo@springreen.in"
+                          type="email"
+                          autoCapitalize="none"
+                          autoComplete="email"
+                          autoCorrect="off"
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="grid gap-1">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                          id="password"
+                          placeholder=""
+                          type="password"
+                          autoCapitalize="none"
+                          autoComplete="current-password"
+                          autoCorrect="off"
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <ForgotPasswordModal />
+                      </div>
 
-                    <Button disabled={isLoading}>
-                      {isLoading && (
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                      )}
-                      Sign In
-                    </Button>
-                  </div>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup">
-                <form onSubmit={onSubmit}>
-                  <div className="grid gap-2">
-                    <div className="grid gap-1">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        placeholder="demo@springreen.in"
-                        type="email"
-                        autoCapitalize="none"
-                        autoComplete="email"
-                        autoCorrect="off"
-                        required
-                        disabled={isLoading}
-                      />
+                      <Button disabled={isLoading}>
+                        {isLoading && (
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                        )}
+                        Sign In
+                      </Button>
                     </div>
-                    <div className="grid gap-1">
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        placeholder=""
-                        type="password"
-                        autoCapitalize="none"
-                        autoComplete="new-password"
-                        autoCorrect="off"
-                        required
-                        disabled={isLoading}
-                      />
+                  </form>
+                </TabsContent>
+                <TabsContent value="signup">
+                  <form onSubmit={onSubmit}>
+                    <div className="grid gap-2">
+                      <div className="grid gap-1">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          placeholder="demo@springreen.in"
+                          type="email"
+                          autoCapitalize="none"
+                          autoComplete="email"
+                          autoCorrect="off"
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="grid gap-1">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                          id="password"
+                          placeholder=""
+                          type="password"
+                          autoCapitalize="none"
+                          autoComplete="new-password"
+                          autoCorrect="off"
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <Button disabled={isLoading}>
+                        {isLoading && (
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                        )}
+                        Sign Up
+                      </Button>
                     </div>
-                    <Button disabled={isLoading}>
-                      {isLoading && (
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                      )}
-                      Sign Up
-                    </Button>
-                  </div>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{" "}
-              <a
-                href="/"
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a
-                href="/"
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Privacy Policy
-              </a>
-              .
-            </p>
-          </CardFooter>
-        </Card>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+              <p className="px-8 text-center text-sm text-muted-foreground">
+                By clicking continue, you agree to our{" "}
+                <a
+                  href="/"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  Privacy Policy
+                </a>
+                .
+              </p>
+            </CardFooter>
+          </Card>
+        )}
       </div>
     </div>
   );
