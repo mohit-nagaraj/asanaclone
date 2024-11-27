@@ -120,7 +120,7 @@ export default function AuthForm() {
 
                       <Button disabled={isLoading}>
                         {isLoading && (
-                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent hover:bg-black hover:text-white"></div>
                         )}
                         Sign In
                       </Button>
