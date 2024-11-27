@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,11 +13,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ForgotPasswordModal } from "@/components/modal/forgot-password";
 
 export default function AuthForm() {
   const router = useRouter();
+  const query = useSearchParams();
+  const logout = query.get("logout");
+  const [loggingOut, setLoggingOut] = useState<boolean>(
+    logout === "true" ? true : false
+  );
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -28,6 +34,14 @@ export default function AuthForm() {
       setIsLoading(false);
     }, 3000);
   }
+
+  useEffect(() => {
+    if (logout) {
+      setTimeout(() => {
+        setLoggingOut(false);
+      }, 3000);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-screen bg-[#1E1F21]">
