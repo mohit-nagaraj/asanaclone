@@ -63,6 +63,8 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import HomePage from "@/components/screens/HomePage";
+import InboxPage from "@/components/screens/InboxPage";
 
 interface Section {
   id: string;
@@ -497,6 +499,8 @@ export default function Dashboard() {
     }
   };
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+
   return (
     <div className="flex h-screen bg-[#1E1F21]">
       <div className="hidden w-64 border-r border-[#424244] bg-[#2e2e30] lg:block">
@@ -510,15 +514,33 @@ export default function Dashboard() {
           </Link>
         </div>
         <div className="flex flex-col gap-1 p-4">
-          <Button className="justify-start text-gray-100" variant="ghost">
+          <Button
+            className={`justify-start ${
+              currentPage === 1 ? "text-gray-800 bg-slate-100" : "text-gray-100"
+            }`}
+            variant="ghost"
+            onClick={() => setCurrentPage(1)}
+          >
             <Home className="mr-2 h-4 w-4" />
             Home
           </Button>
-          <Button className="justify-start text-gray-100" variant="ghost">
+          <Button
+            className={`justify-start ${
+              currentPage === 2 ? "text-gray-800 bg-slate-100" : "text-gray-100"
+            }`}
+            variant="ghost"
+            onClick={() => setCurrentPage(2)}
+          >
             <List className="mr-2 h-4 w-4" />
             My Tasks
           </Button>
-          <Button className="justify-start text-gray-100" variant="ghost">
+          <Button
+            className={`justify-start ${
+              currentPage === 3 ? "text-gray-800 bg-slate-100" : "text-gray-100"
+            }`}
+            variant="ghost"
+            onClick={() => setCurrentPage(3)}
+          >
             <Inbox className="mr-2 h-4 w-4" />
             Inbox
           </Button>
@@ -605,93 +627,99 @@ export default function Dashboard() {
             </Button>
           </div>
         </header>
-        <div className="flex items-center gap-4 border-b border-[#424244] px-4 py-2">
-          <Button variant="ghost" className="text-[#9CA6AF]">
-            List
-          </Button>
-          <Button variant="ghost" className="text-[#9CA6AF]">
-            Board
-          </Button>
-          <Button variant="ghost" className="text-[#9CA6AF]">
-            Calendar
-          </Button>
-          <Button variant="ghost" className="text-[#9CA6AF]">
-            Files
-          </Button>
-          <Plus className="h-4 w-4 text-[#9CA6AF]" />
-        </div>
-        <div className="flex items-center gap-4 border-b border-[#424244] p-4">
-          <Button className="bg-[#4573D2] text-white hover:bg-[#4573D2]/90">
-            Add task
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-          <div className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" className="text-[#9CA6AF]">
-              Filter
-            </Button>
-            <Button variant="ghost" className="text-[#9CA6AF]">
-              Sort
-            </Button>
-            <Button variant="ghost" className="text-[#9CA6AF]">
-              Group
-            </Button>
-            <Button variant="ghost" className="text-[#9CA6AF]">
-              Options
-            </Button>
-          </div>
-        </div>
-        <div className="grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b border-[#424244] p-4 text-sm text-gray-100">
-          <div></div>
-          <div>Task name</div>
-          <div>Due date</div>
-          <div>Collaborators</div>
-          <div>Projects</div>
-          <div>Task visibility</div>
-        </div>
-        <ScrollArea className="flex-1">
-          <div className="p-4">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={sections}
-                strategy={verticalListSortingStrategy}
-              >
-                {sections.map((section) => (
-                  <SortableSection
-                    key={section.id}
-                    section={section}
-                    onDelete={handleDeleteSection}
-                    onUpdateTasks={handleUpdateTasks}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-            {isAddingSection ? (
-              <div className="pl-6">
-                <Input
-                  autoFocus
-                  className="h-8 w-64 bg-transparent border-none text-white placeholder:text-[#9CA6AF] focus-visible:ring-0 focus-visible:ring-offset-0"
-                  placeholder="Section name"
-                  value={newSectionTitle}
-                  onChange={(e) => setNewSectionTitle(e.target.value)}
-                  onKeyDown={handleSectionSubmit}
-                  onBlur={handleSectionBlur}
-                />
+        {currentPage == 1 && <HomePage />}
+        {currentPage == 3 && <InboxPage />}
+        {currentPage == 2 && (
+          <div>
+            <div className="flex items-center gap-4 border-b border-[#424244] px-4 py-2">
+              <Button variant="ghost" className="text-[#9CA6AF]">
+                List
+              </Button>
+              <Button variant="ghost" className="text-[#9CA6AF]">
+                Board
+              </Button>
+              <Button variant="ghost" className="text-[#9CA6AF]">
+                Calendar
+              </Button>
+              <Button variant="ghost" className="text-[#9CA6AF]">
+                Files
+              </Button>
+              <Plus className="h-4 w-4 text-[#9CA6AF]" />
+            </div>
+            <div className="flex items-center gap-4 border-b border-[#424244] p-4">
+              <Button className="bg-[#4573D2] text-white hover:bg-[#4573D2]/90">
+                Add task
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+              <div className="ml-auto flex items-center gap-2">
+                <Button variant="ghost" className="text-[#9CA6AF]">
+                  Filter
+                </Button>
+                <Button variant="ghost" className="text-[#9CA6AF]">
+                  Sort
+                </Button>
+                <Button variant="ghost" className="text-[#9CA6AF]">
+                  Group
+                </Button>
+                <Button variant="ghost" className="text-[#9CA6AF]">
+                  Options
+                </Button>
               </div>
-            ) : (
-              <button
-                className="flex items-center gap-2 pl-6 text-[#9CA6AF] hover:text-white transition-colors"
-                onClick={() => setIsAddingSection(true)}
-              >
-                <Plus className="h-4 w-4" />
-                Add section
-              </button>
-            )}
+            </div>
+            <div className="grid grid-cols-[24px_1fr_150px_150px_150px_100px] gap-4 border-b border-[#424244] p-4 text-sm text-gray-100">
+              <div></div>
+              <div>Task name</div>
+              <div>Due date</div>
+              <div>Collaborators</div>
+              <div>Projects</div>
+              <div>Task visibility</div>
+            </div>
+            <ScrollArea className="flex-1">
+              <div className="p-4">
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={sections}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {sections.map((section) => (
+                      <SortableSection
+                        key={section.id}
+                        section={section}
+                        onDelete={handleDeleteSection}
+                        onUpdateTasks={handleUpdateTasks}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+                {isAddingSection ? (
+                  <div className="pl-6">
+                    <Input
+                      autoFocus
+                      className="h-8 w-64 bg-transparent border-none text-white placeholder:text-[#9CA6AF] focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="Section name"
+                      value={newSectionTitle}
+                      onChange={(e) => setNewSectionTitle(e.target.value)}
+                      onKeyDown={handleSectionSubmit}
+                      onBlur={handleSectionBlur}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 pl-6 text-[#9CA6AF] hover:text-white transition-colors"
+                    onClick={() => setIsAddingSection(true)}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add section
+                  </button>
+                )}
+              </div>
+            </ScrollArea>
           </div>
-        </ScrollArea>
+        )}
       </div>
     </div>
   );
