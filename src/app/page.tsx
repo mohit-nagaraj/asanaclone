@@ -21,7 +21,14 @@ import {
   Bell,
   Calendar,
   ChevronDown,
+  CheckCircle2,
+  Clock,
+  Eye,
+  Pencil,
   ChevronRight,
+  Mail,
+  RefreshCw,
+  Sparkles,
   Grid,
   GripVertical,
   Home,
@@ -57,6 +64,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
@@ -64,6 +72,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import HomePage from "@/components/screens/HomePage";
@@ -89,6 +104,13 @@ interface Collaborator {
   id: string;
   name: string;
   avatar: string;
+}
+
+interface FieldOption {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  enabled: boolean;
 }
 
 const collaborators: Collaborator[] = [
@@ -530,6 +552,59 @@ function DashboardContent() {
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
+  const [fields, setFields] = React.useState<FieldOption[]>([
+    {
+      id: "visibility",
+      name: "Task visibility",
+      icon: <Eye className="h-5 w-5" />,
+      enabled: true,
+    },
+    {
+      id: "dueDate",
+      name: "Due date",
+      icon: <Calendar className="h-5 w-5" />,
+      enabled: true,
+    },
+    // {
+    //   id: "collaborators",
+    //   name: "Collaborators",
+    //   icon: <User className="h-5 w-5" />,
+    //   enabled: true,
+    // },
+    // {
+    //   id: "createdBy",
+    //   name: "Created by",
+    //   icon: <User className="h-5 w-5" />,
+    //   enabled: true,
+    // },
+    {
+      id: "createdOn",
+      name: "Created on",
+      icon: <Clock className="h-5 w-5" />,
+      enabled: true,
+    },
+    {
+      id: "modifiedOn",
+      name: "Last modified on",
+      icon: <Pencil className="h-5 w-5" />,
+      enabled: true,
+    },
+    {
+      id: "completedOn",
+      name: "Completed on",
+      icon: <CheckCircle2 className="h-5 w-5" />,
+      enabled: true,
+    },
+  ]);
+
+  const toggleField = (id: string) => {
+    setFields(
+      fields.map((field) =>
+        field.id === id ? { ...field, enabled: !field.enabled } : field,
+      ),
+    );
+  };
+
   return (
     <div
       className={`flex h-screen ${theme === "light" ? "bg-white" : "bg-[#1E1F21]"}`}
@@ -546,7 +621,9 @@ function DashboardContent() {
             <span>TaskFlow</span>
           </Link>
         </div>
-        <div className="flex flex-col gap-1 p-4">
+        <div
+          className={`flex flex-col ${theme === "light" ? "text-black" : "text-black"} gap-1 p-4`}
+        >
           <Button
             className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
             variant="ghost"
@@ -556,7 +633,7 @@ function DashboardContent() {
             Home
           </Button>
           <Button
-            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+            className={`justify-start ${theme === "light" ? "text-gray-700" : "text-white"}`}
             variant="ghost"
             onClick={() => setCurrentPage(2)}
           >
@@ -574,7 +651,9 @@ function DashboardContent() {
           <Separator
             className={`my-2 justify-start ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
           />
-          <div className="flex items-center justify-between px-2 py-1 text-sm font-semibold text-gray-100">
+          <div
+            className={`flex items-center justify-between ${theme === "light" ? "text-black" : "text-white"} px-2 py-1 text-sm font-semibold `}
+          >
             Projects
             <Button
               size="icon"
@@ -585,13 +664,18 @@ function DashboardContent() {
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex flex-col gap-1">
+          <div
+            className={`flex flex-col gap-1 ${theme === "light" ? "text-gray-700" : "text-gray-100"}`}
+          >
             {projects.map((project) => (
-              <div key={project.id} className="flex items-center gap-2">
+              <div
+                key={project.id}
+                className={`flex items-center ${theme === "light" ? "text-black" : "text-gray-100"} gap-2`}
+              >
                 {editingProjectId === project.id ? (
                   <Input
                     autoFocus
-                    className="bg-transparent text-white"
+                    className={`${theme === "light" ? "text-black" : "text-white"} bg-transparent`}
                     value={editingProjectName}
                     onChange={(e) => setEditingProjectName(e.target.value)}
                     onKeyDown={(e) => handleEditProjectSubmit(e, project.id)}
@@ -599,7 +683,7 @@ function DashboardContent() {
                   />
                 ) : (
                   <Button
-                    className="justify-start text-gray-100 w-full"
+                    className={`justify-start ${theme === "light" ? "text-black" : "text-gray-100"} w-full`}
                     variant="ghost"
                     onClick={() => {
                       setEditingProjectId(project.id);
@@ -648,18 +732,46 @@ function DashboardContent() {
             )}
           </Button>
           <div className="flex items-center gap-2">
-            <Avatar className="h-6 w-6">
-              <AvatarImage alt="User" src="/placeholder-user.jpg" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <span
-              className={`text-sm font-medium ${theme === "light" ? "text-gray-700" : "text-white"}`}
-            >
-              My tasks
-            </span>
-            <ChevronDown
-              className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
-            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 px-2 hover:bg-transparent"
+                >
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage alt="User" src="/placeholder-user.jpg" />
+                    <AvatarFallback>U</AvatarFallback>
+                  </Avatar>
+                  <span
+                    className={`text-sm font-medium ${theme === "light" ? "text-gray-700" : "text-white"}`}
+                  >
+                    My tasks
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
+                  />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[220px]">
+                <DropdownMenuItem>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Add tasks via AI
+                  <span className="ml-2 rounded bg-purple-100 px-1.5 py-0.5 text-xs font-medium text-purple-600">
+                    BETA
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Add tasks via Email...
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Sync/Export
+                  <ChevronRight className="ml-auto h-4 w-4" />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
@@ -695,39 +807,10 @@ function DashboardContent() {
             >
               <Button
                 variant="ghost"
-                className={
-                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
-                }
+                className={theme === "light" ? "text-black" : "text-white"}
               >
                 List
               </Button>
-              <Button
-                variant="ghost"
-                className={
-                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
-                }
-              >
-                Board
-              </Button>
-              <Button
-                variant="ghost"
-                className={
-                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
-                }
-              >
-                Calendar
-              </Button>
-              <Button
-                variant="ghost"
-                className={
-                  theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"
-                }
-              >
-                Files
-              </Button>
-              <Plus
-                className={`h-4 w-4 ${theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}`}
-              />
             </div>
             <div
               className={`flex items-center gap-4 border-b ${theme === "light" ? "border-gray-200" : "border-[#424244]"} p-4`}
@@ -739,38 +822,76 @@ function DashboardContent() {
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
               <div className="ml-auto flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  className={
-                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
-                  }
-                >
-                  Filter
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={
-                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
-                  }
-                >
-                  Sort
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={
-                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
-                  }
-                >
-                  Group
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={
-                    theme === "light" ? "text-gray-700" : "text-[#9CA6AF]"
-                  }
-                >
-                  Options
-                </Button>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost">Options</Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className={`w-[400px] ${theme === "light" ? "bg-white" : "bg-[#1E1F21]"}`}
+                  >
+                    <SheetHeader>
+                      <SheetTitle
+                        className={
+                          theme === "light" ? "text-gray-900" : "text-white"
+                        }
+                      >
+                        Options
+                      </SheetTitle>
+                    </SheetHeader>
+
+                    <div className="mt-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h2
+                            className={`text-lg font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}
+                          >
+                            Fields
+                          </h2>
+                          <p
+                            className={`text-sm ${theme === "light" ? "text-gray-500" : "text-gray-400"}`}
+                          >
+                            Show, hide, and reorder columns in this view.
+                          </p>
+                        </div>
+                        <Button size="sm" variant="outline" className="gap-1">
+                          <Plus className="h-4 w-4" />
+                          Add
+                        </Button>
+                      </div>
+
+                      <div className="space-y-6">
+                        {fields.map((field) => (
+                          <div
+                            key={field.id}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={
+                                  theme === "light"
+                                    ? "text-gray-500"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {field.icon}
+                              </div>
+                              <span
+                                className={`text-sm font-medium ${theme === "light" ? "text-gray-900" : "text-white"}`}
+                              >
+                                {field.name}
+                              </span>
+                            </div>
+                            <Switch
+                              checked={field.enabled}
+                              onCheckedChange={() => toggleField(field.id)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
               </div>
             </div>
             <div

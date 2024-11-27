@@ -31,7 +31,7 @@ const HomePage = () => {
               month: "long",
             })}
           </h1>
-          <h2 className="text-2xl font-semibold">Good morning, Mohit</h2>
+          <h2 className="text-2xl font-semibold">Good morning, Springreen</h2>
         </div>
 
         <div
