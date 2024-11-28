@@ -551,6 +551,8 @@ function DashboardContent() {
 
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
 
+  const [searchEnabled, setSearchEnabled] = React.useState(false);
+
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const [fields, setFields] = React.useState<FieldOption[]>([
@@ -615,11 +617,12 @@ function DashboardContent() {
       }`}
     >
       <div
-        className={`hidden w-64 border-r ${
+        className={`
+          ${isSidebarOpen ? "block" : "hidden"} w-64 border-r ${
           theme === "light"
             ? "border-gray-200 bg-gray-100"
             : "border-[#424244] bg-[#2e2e30]"
-        } lg:block`}
+        }`}
       >
         <div className="flex h-14 items-center border-b border-[#424244] px-4">
           <Link
@@ -815,12 +818,26 @@ function DashboardContent() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          {searchEnabled && (
+            <div className="flex w-full items-center gap-2">
+              <Input
+                autoFocus
+                className="h-8 bg-transparent border rounded-full w-full text-white placeholder:text-[#9CA6AF] focus-visible:ring-0 focus-visible:ring-offset-0"
+                placeholder="Search tasks..."
+              />
+            </div>
+          )}
+          <div
+            className={`${
+              searchEnabled ? "" : "ml-auto"
+            } flex items-center gap-2`}
+          >
             <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
               className={theme === "light" ? "text-gray-500" : "text-[#9CA6AF]"}
+              onClick={() => setSearchEnabled((prev) => !prev)}
             >
               <Search className="h-4 w-4" />
             </Button>
