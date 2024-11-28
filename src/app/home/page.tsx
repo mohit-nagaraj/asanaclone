@@ -888,18 +888,6 @@ function DashboardContent() {
             <div
               className={`flex items-center gap-4 border-b ${
                 theme === "light" ? "border-gray-200" : "border-[#424244]"
-              } px-4 py-2`}
-            >
-              <Button
-                variant="ghost"
-                className={theme === "light" ? "text-black" : "text-white"}
-              >
-                List
-              </Button>
-            </div>
-            <div
-              className={`flex items-center gap-4 border-b ${
-                theme === "light" ? "border-gray-200" : "border-[#424244]"
               } p-4`}
             >
               <Button
