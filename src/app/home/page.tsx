@@ -149,6 +149,13 @@ function SortableTask({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  const inputRef = React.useRef(null);
+
+  const handleEdit = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   return (
     <div
@@ -157,11 +164,15 @@ function SortableTask({
       {...attributes}
       {...listeners}
       className="grid grid-cols-[24px_1fr_150px_150px_150px_100px] items-center gap-4 py-2 text-sm text-[#9CA6AF] hover:bg-[#2C2D2E]"
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleEdit();
+      }}
     >
       <Checkbox id={`task-${task.id}`} className="h-4 w-4" />
       {isEditing ? (
         <input
+          ref={inputRef}
           type="text"
           value={editedTitle}
           onChange={(e) => setEditedTitle(e.target.value)}
