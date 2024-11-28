@@ -132,6 +132,19 @@ function SortableTask({
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
 
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editedTitle, setEditedTitle] = React.useState(task.title);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && editedTitle.trim()) {
+      onUpdate({ ...task, title: editedTitle });
+      setIsEditing(false);
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setEditedTitle(task.title); // Reset to the original title
+    }
+  };
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -144,11 +157,26 @@ function SortableTask({
       {...attributes}
       {...listeners}
       className="grid grid-cols-[24px_1fr_150px_150px_150px_100px] items-center gap-4 py-2 text-sm text-[#9CA6AF] hover:bg-[#2C2D2E]"
+      onClick={(e) => e.stopPropagation()}
     >
       <Checkbox id={`task-${task.id}`} className="h-4 w-4" />
-      <label htmlFor={`task-${task.id}`} className="text-white cursor-pointer">
-        {task.title}
-      </label>
+      {isEditing ? (
+        <input
+          type="text"
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-grow bg-transparent text-white border-none focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500"
+          autoFocus
+        />
+      ) : (
+        <span
+          className="flex-grow text-white cursor-pointer"
+          onClick={() => setIsEditing(true)}
+        >
+          {task.title}
+        </span>
+      )}
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -275,15 +303,21 @@ function SortableSection({
   section,
   onDelete,
   onUpdateTasks,
+  onUpdateSection,
 }: {
   section: Section;
   onDelete: (id: string) => void;
   onUpdateTasks: (sectionId: string, tasks: Task[]) => void;
+  onUpdateSection: (updatedSection: Section) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: section.id });
   const [newTaskTitle, setNewTaskTitle] = React.useState("");
   const [isAddingTask, setIsAddingTask] = React.useState(false);
+  const [isEditingSection, setIsEditingSection] = React.useState(false);
+  const [editedSectionTitle, setEditedSectionTitle] = React.useState(
+    section.title
+  );
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -313,15 +347,15 @@ function SortableSection({
     onUpdateTasks(section.id, updatedTasks);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = section.tasks.findIndex((task) => task.id === active.id);
-      const newIndex = section.tasks.findIndex((task) => task.id === over.id);
-
-      const newTasks = arrayMove(section.tasks, oldIndex, newIndex);
-      onUpdateTasks(section.id, newTasks);
+  const handleSectionTitleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter" && editedSectionTitle.trim()) {
+      onUpdateSection({ ...section, title: editedSectionTitle });
+      setIsEditingSection(false);
+    } else if (e.key === "Escape") {
+      setIsEditingSection(false);
+      setEditedSectionTitle(section.title); // Reset to the original title
     }
   };
 
@@ -335,19 +369,28 @@ function SortableSection({
         >
           <GripVertical className="h-4 w-4" />
         </button>
-        <button
-          className="flex items-center gap-2"
-          onClick={() => {
-            section.isExpanded = !section.isExpanded;
-          }}
-        >
-          {section.isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-          {section.title}
-        </button>
+        {isEditingSection ? (
+          <input
+            type="text"
+            value={editedSectionTitle}
+            onChange={(e) => setEditedSectionTitle(e.target.value)}
+            onKeyDown={handleSectionTitleKeyDown}
+            className="bg-transparent text-white border-none focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500"
+            autoFocus
+          />
+        ) : (
+          <button
+            className="flex items-center gap-2"
+            onClick={() => setIsEditingSection(true)}
+          >
+            {section.isExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+            {section.title}
+          </button>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -374,7 +417,21 @@ function SortableSection({
           <DndContext
             sensors={[useSensor(PointerSensor)]}
             collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+            onDragEnd={(event) => {
+              const { active, over } = event;
+
+              if (over && active.id !== over.id) {
+                const oldIndex = section.tasks.findIndex(
+                  (task) => task.id === active.id
+                );
+                const newIndex = section.tasks.findIndex(
+                  (task) => task.id === over.id
+                );
+
+                const newTasks = arrayMove(section.tasks, oldIndex, newIndex);
+                onUpdateTasks(section.id, newTasks);
+              }
+            }}
           >
             <SortableContext
               items={section.tasks}
@@ -609,6 +666,14 @@ function DashboardContent() {
   };
 
   const router = useRouter();
+
+  const handleUpdateSection = (updatedSection: Section) => {
+    setSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === updatedSection.id ? updatedSection : section
+      )
+    );
+  };
 
   return (
     <div
@@ -1016,6 +1081,7 @@ function DashboardContent() {
                         section={section}
                         onDelete={handleDeleteSection}
                         onUpdateTasks={handleUpdateTasks}
+                        onUpdateSection={handleUpdateSection}
                       />
                     ))}
                   </SortableContext>
